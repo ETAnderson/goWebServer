@@ -1,17 +1,23 @@
 // route for gql interface layer
-package gql
+package routes
 
 import (
-	"fmt"
 	"net/http"
 )
 
-func GqlHandler() (string, func(w http.ResponseWriter, r *http.Request)) {
+type KeyValuePair struct {
+	Key   string
+	Value func(http.ResponseWriter, *http.Request)
+}
+
+func GqlHandler() []KeyValuePair {
 	route := "/gql"
 
 	handler := func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "gql placeholder")
+		w.Write([]byte("gql placeholder"))
 	}
 
-	return route, handler
+	return []KeyValuePair{
+		{Key: route, Value: handler},
+	}
 }

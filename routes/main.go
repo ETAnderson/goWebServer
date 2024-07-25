@@ -4,14 +4,13 @@
 package routes
 
 import (
-	"fmt"
 	"net/http"
 )
 
 func HandleRoutes() {
-	handler := func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, Go Web Server!")
-	}
+	routes := GqlHandler()
 
-	http.HandleFunc("/", handler)
+	for _, route := range routes {
+		http.HandleFunc(route.Key, route.Value)
+	}
 }

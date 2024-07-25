@@ -1,6 +1,7 @@
 package main
 
 import (
+	routes "goWebServer/routes"
 	boot "goWebServer/utility/server"
 )
 
