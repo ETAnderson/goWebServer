@@ -5,19 +5,17 @@ import (
 	"net/http"
 )
 
-type KeyValuePair struct {
-	Key   string
-	Value func(http.ResponseWriter, *http.Request)
-}
-
-func GqlHandler() []KeyValuePair {
+func GqlHandler() (string, func(w http.ResponseWriter, r *http.Request)) {
 	route := "/gql"
 
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("gql placeholder"))
 	}
 
-	return []KeyValuePair{
-		{Key: route, Value: handler},
-	}
+	return route, handler
+}
+
+func init() {
+	route, handler := GqlHandler()
+	RegisterRoute(route, handler)
 }

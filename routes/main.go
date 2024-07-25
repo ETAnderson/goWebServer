@@ -4,13 +4,15 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 )
 
 func HandleRoutes() {
-	routes := GqlHandler()
+	routes := GetRoutes()
 
-	for _, route := range routes {
-		http.HandleFunc(route.Key, route.Value)
+	for route, handler := range routes {
+		fmt.Println("Setting up route:", route)
+		http.HandleFunc(route, handler)
 	}
 }
