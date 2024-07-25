@@ -12,9 +12,8 @@ func Serve() {
 		return
 	}
 	port := os.Args[1]
-	port = fmt.Sprintf("%p", port)
 	fmt.Println("Starting server on port:", port)
-	err := http.ListenAndServe(port, nil)
+	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		fmt.Println("Error starting server:", err)
 	}
