@@ -2,10 +2,10 @@ package main
 
 import (
 	routes "goWebServer/routes"
-	boot "goWebServer/utility/server"
+	server "goWebServer/utility/server"
 )
 
 func main() {
 	routes.HandleRoutes()
-	boot.Serve()
+	server.Serve()
 }

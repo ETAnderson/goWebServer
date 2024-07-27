@@ -1,0 +1,21 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+</head>
+<body>
+    {{template "header" .}}
+    <h1>{{.Heading}}</h1>
+    <h3>{{.Description}}</h3>
+    <ul>
+        {{range .Routes}}
+            <li><a href="{{.}}">{{.}}</a></li>
+        {{else}}
+            <li>No Routes Available</li>
+        {{end}}
+    </ul>
+</body>
+</html>
+
