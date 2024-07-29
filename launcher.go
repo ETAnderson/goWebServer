@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 
 	routes "goWebServer/routes"
 	server "goWebServer/utility/server"
@@ -13,11 +14,11 @@ import (
 )
 
 func main() {
-
 	err := server.LoadEnv()
 	if err != nil {
 		log.Fatal("Error loading environment variables:", err)
 	}
+
 	// Create a log file
 	logFile, err := os.OpenFile("http_server.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
@@ -48,6 +49,17 @@ func main() {
 		}
 	}()
 
+	// Read the WATCHER environment variable from .env
+	watcherDir := os.Getenv("WATCHER")
+	if watcherDir == "" {
+		log.Fatal("Environment variable WATCHER not set")
+	}
+
+	// Make sure the directory exists
+	if _, err := os.Stat(watcherDir); os.IsNotExist(err) {
+		log.Fatalf("Specified directory does not exist: %s", watcherDir)
+	}
+
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log.Fatal("Error creating file watcher:", err)
@@ -58,6 +70,22 @@ func main() {
 	go func() {
 		restartChan := make(chan bool)
 		go startServer(restartChan)
+
+		// Watch the specified directory
+		err := filepath.Walk(watcherDir, func(path string, info os.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			if info.IsDir() {
+				if err := watcher.Add(path); err != nil {
+					log.Printf("Error adding watcher to directory %s: %v", path, err)
+				}
+			}
+			return nil
+		})
+		if err != nil {
+			log.Fatal("Error walking the file tree:", err)
+		}
 
 		for {
 			select {
@@ -78,11 +106,7 @@ func main() {
 		}
 	}()
 
-	log.Println("Watching for file changes in the 'templates' directory...")
-	err = watcher.Add("templates")
-	if err != nil {
-		log.Fatal("Error adding watcher to templates directory:", err)
-	}
+	log.Printf("Watching for file changes in the '%s' directory...", watcherDir)
 
 	<-done
 }

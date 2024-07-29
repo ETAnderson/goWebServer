@@ -1,0 +1,7 @@
+# Ignore .env and .log files
+.env
+*.log
+
+# Do not ignore example.env
+!example.env
+
