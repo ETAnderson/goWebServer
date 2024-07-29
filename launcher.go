@@ -30,6 +30,7 @@ func main() {
 	log.SetOutput(logFile)
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 
+	// Initialize routes only once
 	log.Println("Initializing routes...")
 	routes.HandleRoutes()
 
@@ -71,8 +72,7 @@ func main() {
 		restartChan := make(chan bool)
 		go startServer(restartChan)
 
-		// Watch the specified directory
-		err := filepath.Walk(watcherDir, func(path string, info os.DirEntry, err error) error {
+		err := filepath.Walk(watcherDir, func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
@@ -93,6 +93,7 @@ func main() {
 				if !ok {
 					return
 				}
+				// Check if the event is a write and log it
 				if event.Op&fsnotify.Write == fsnotify.Write {
 					log.Println("Modified file:", event.Name)
 					restartChan <- true
