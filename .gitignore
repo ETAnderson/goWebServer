@@ -2,6 +2,8 @@
 .env
 *.log
 
+# Ignore server files created by git when server is running
+/server
 # Do not ignore example.env
 !example.env
 
