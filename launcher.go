@@ -4,6 +4,7 @@ import (
 	routes "goWebServer/routes"
 	server "goWebServer/utility/server"
 	"log"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -15,6 +16,7 @@ import (
 
 func main() {
 	routes.HandleRoutes()
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	server.Serve()
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
