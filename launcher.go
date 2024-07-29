@@ -13,6 +13,11 @@ import (
 )
 
 func main() {
+
+	err := server.LoadEnv()
+	if err != nil {
+		log.Fatal("Error loading environment variables:", err)
+	}
 	// Create a log file
 	logFile, err := os.OpenFile("http_server.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
